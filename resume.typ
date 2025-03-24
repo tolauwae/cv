@@ -3,6 +3,13 @@
 #let highlight = rgb(32, 159, 181)
 #let subdued = rgb(92, 95, 119)
 
+#let smaller(it) = text(size: 7pt, it)
+
+#let dividor = [
+    #v(1.5em)
+    #line(length: 100%, stroke: 0.3pt)
+]
+
 // Socials
 
 #let social(url, icon, body) = [
@@ -44,21 +51,27 @@
 
 // Building blocks
 
-#let item(head, quiet, description, oneline: false, url: none, artifact: none, docs: none) = [
-    #let emphasize(addendum: [], body) = [
+#let item(head, quiet, description, oneline: false, url: none, doi: none, artifact: none, docs: none, slide: none) = [
+    #let emphasize(addendum: [], url: none, body) = [
         #block(above: 1.2em, below: 0.7em)[
             #let content = ()
+            #if url != none {
+                content.push(image("icons/link.svg", height: 0.9em))
+            }
             #if oneline {
                 content.push([#text(weight: 700)[#body] #text(fill: subdued, style: "italic")[#sym.dot.op #addendum]])
             } else {
                 content.push([#text(weight: 700)[#body]])
             }
-            #if url != none {
+            #if doi != none {
             content.push([
-                #link(url, image("icons/pdf.svg", height: 1em))  // todo add pdf logo/
+                #link(doi, image("icons/pdf.svg", height: 1em))
             ])}
             #if artifact != none {content.push([
-                #link(artifact, image("icons/git.svg", height: 1em))  // todo add pdf logo
+                #link(artifact, image("icons/git.svg", height: 1em))
+            ])}
+            #if slide != none {content.push([
+                #link(slide, image("icons/slideshow.svg", height: 1em))
             ])}
             #if docs != none {
             content.push([
@@ -70,14 +83,22 @@
 
     #show heading: set block(below: 0.7em)
 
-    #if oneline [
-        #emphasize(addendum: quiet, head)
-    ] else [
-        #emphasize(head)
-        #text(fill: subdued, style: "italic", quiet)
+    #let content = [
+        #if oneline [
+            #emphasize(addendum: quiet, url: url, head)
+        ] else [
+            #emphasize(url: url, head)
+            #text(fill: subdued, style: "italic", quiet)
+        ]
+        #v(0.1em)
+        #description
     ]
-    #v(0.1em)
-    #description
+
+    #if url != none [
+        #link(url, content)
+    ] else [
+        #content
+    ]
 ]
 
 #let experience(employer, role, start, end, description, oneline: false) = [
@@ -90,14 +111,6 @@
             #start - #end
         ] \
     ], description, oneline: oneline)
-]
-
-#let languages(languages) = [
-    === Languages
-
-    #for language in languages [
-        #item(language.name, [#language.proficiency], [], oneline: true)
-    ]
 ]
 
 // Styling
@@ -114,40 +127,33 @@
 // Content
 
 #let title = [
-    #show heading: set block(below: 0.8em)
-    #show heading: set text(weight: 900, size: 1.5em, spacing: 0.2em)
+    #show heading: set block(below: 0.4em)
+    #show heading: set text(font: "Lusitana", weight: 700, size: 1.9em, spacing: 0.2em)
     #set align(center)
 
-    = #upper[T o m #h(1em) L a u w a e r t s]
+    //= #upper(text(font: ("Cambo"))[T o m #h(1em) L a u w a e r t s])
+    = Tom Lauwaerts
+    //#upper(text(fill: subdued, weight: 400, size: 0.8em, "Researcher specializing in Programming Languages"))
 ]
 
 // Page
 
 #let sidemargin = 6em
 
-#let columns = (4fr, 8fr)
+#let columns = (4fr, 9fr)
 
 #set page(margin: (left: sidemargin, right: sidemargin, top: 4em, bottom: 4em), paper: "a4")
 
 #title
 
-
 #v(1.5em)
 #line(length: 100%, stroke: 0.3pt)
 
 #grid(columns: columns, [
-//    === Background & Education
-//
-//        #item("PhD. Computer Science (candidate)", "2021 - present", [Ghent University, TOPL lab], oneline: true)
-//
-//    #item("MSc. Computer Science", "2019 - 2021", [Ghent University, faculty of Sciences], oneline: true)
-//
-//    #item("BSc. Computer Science", "2016 - 2019", [Ghent University, faculty of Sciences], oneline: true)
-//
     === Contact
 
     #[
-        #set text(size: 7pt)
+        #set text(fill: subdued)
         #grid(columns: 1, gutter: 5pt,
         link("mailto:tom.lauwaerts@gmail.com", "tom.lauwaerts@gmail.com"),
         "(+32) 468 20 27 42",
@@ -157,13 +163,6 @@
         github("tolauwae")
         ))
     ]
-    //#grid(columns: 1, gutter: 3pt,
-    //github("tolauwae")
-    //,linkedin("tolauwae")
-    //,orcid("0000-0003-1262-8893", full: true)
-    //,mail("tom.lauwaerts@gmail.com")
-    //,phone("+32 468 20 27 42"))
-
 ], [
     Computer science researcher with nearly 4 years experience in programming language research focussed on debugging and testing of embedded applications, and a strong interest in software development and best practices.
 
@@ -180,10 +179,7 @@
 
     #experience("Ghent University",  "Teaching Assistant", 2021, "present",
         [
-        Assisting the lecturer, supervising the tutorials, and responsible for the projects, for the following courses:
-
-        - Fundamenten van programmeertalen
-        - Logisch programmeren
+        Assisting the lecturer, supervising the tutorials, and responsible for the projects, for the courses: #text(style: "italic", "Fundamenten van programmeertalen"), and #text(style:"italic", "Logisch programmeren").
     ])
 
     //#experience("Creative Therapy (startup)", "Embedded Software Developer (Internship)", "July", "August 2020", "Researching WebUSB technology and developing a USB gadget driver in Linux for WebUSB communication between the online platform and the hardware.")
@@ -194,21 +190,24 @@
     //])
 ])
 
-#v(1.5em)
-#line(length: 100%, stroke: 0.3pt)
+#let education = [
+#dividor
 
 #grid(columns: columns, [
     === Education // Opleiding
 ], [
-        #item("PhD. Computer Science (candidate)", "2021 - present", [Ghent University, TOPL lab], oneline: true)
+        #item("PhD. Computer Science (candidate)", "2021 - 2025", [Ghent University, TOPL lab], oneline: true)
 
-    #item("MSc. Computer Science", "2019 - 2021", [Ghent University, faculty of Sciences], oneline: true)
+    #item("OPLSS 2022 Summer school", "June - July 2022", "Attended the Oregon Programming Languages Summer School.", oneline: true, url: "https://www.cs.uoregon.edu/research/summerschool/summer22/")
 
-    #item("BSc. Computer Science", "2016 - 2019", [Ghent University, faculty of Sciences], oneline: true)
+    #item("BSc. and MSc. Computer Science", "2016 - 2021", [Ghent University, faculty of Sciences], oneline: true)
 ])
+]
+#education
 
-#v(1.5em)
-#line(length: 100%, stroke: 0.3pt)
+#let languages = [
+
+#dividor
 
 #grid(columns: columns, [
     === Languages
@@ -219,86 +218,95 @@
     item("English", "High professional proficiency", [], oneline: true),
     item("French", "Elementary", [], oneline: true))
 ])
+]
+#languages
 
-#v(1.5em)
-#line(length: 100%, stroke: 0.3pt)
+#let research-highlight = [
+
+#dividor
 
 #grid(columns: columns, [
     === Highlighted research output
     
-    #grid(columns: 3, orcid("0000-0003-1262-8893"), researchgate("Tom-Lauwaerts"), googlescholar("https://scholar.google.com/citations?user=uHdt08sAAAAJ&hl=en&oi=ao"))
+    #smaller(grid(columns: 3, orcid("0000-0003-1262-8893"), researchgate("Tom-Lauwaerts"), googlescholar("https://scholar.google.com/citations?user=uHdt08sAAAAJ&hl=en&oi=ao")))
 
 ], [
-    // todo add links
+    #item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], doi: "https://doi.org/10.1016/j.scico.2024.103157", artifact: "https://github.com/TOPLLab/latch")
 
-    #item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], url: "https://doi.org/10.1016/j.scico.2024.103157", artifact: "https://github.com/TOPLLab/latch")
+    // #item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [], doi: "https://doi.org/10.1016/j.cola.2024.101268", artifact: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
 
-    #item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [], url: "https://doi.org/10.1016/j.cola.2024.101268", artifact: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
-
-    #item("Event-Based Out-of-Place Debugging", "2022-09-14 | Conference paper (MPLR'22)", [], url: "https://doi.org/10.1145/3546918.3546920", docs: "https://topllab.github.io/WARDuino/reference/edward/")
+    #item("Event-Based Out-of-Place Debugging", "2022-09-14 | Conference paper (MPLR'22)", [], doi: "https://doi.org/10.1145/3546918.3546920", docs: "https://topllab.github.io/WARDuino/reference/edward/", slide: "https://tolauwae.github.io/mplr22/")
 ])
+]
+#research-highlight
 
-#v(1.5em)
-#line(length: 100%, stroke: 0.3pt)
+#let international = [
+
+#dividor
 
 #grid(columns: columns, [
     === International collaborations & \ other research activities
 ], [
-    #item("DEBT workshop co-organizer", "2025", "Co-organizing the DEBT'25 workshop with Burcu Kulahcioglu Ozkan (TU Delft).", oneline: true)
+    #item("DEBT workshop co-organizer", "2025", "Co-organizing the DEBT'25 workshop with Burcu Kulahcioglu Ozkan (TU Delft).", oneline: true, url: "https://2025.ecoop.org/home/debt-2025")
 
-    #item("Programming artifact evaluation committee member", "2024 - 2025", "AEC member for the Programming journal and conference (volumes 9 and 10).", oneline: true)
+    #item("Programming artifact evaluation committee member", "2024 - 2026", "AEC member for the Programming conference and journal (volumes 9 and 10).", oneline: true, url: "https://2025.programming-conference.org/track/programming-2025-artifacts")
 
-    #item( "Active collaboration: Open Bot Brain", "2023 - present", "Research project with Francisco Ferreira Ruiz (Royal Holloway).", oneline: true)
+    #item( "Active collaboration: Open Bot Brain", "2023 - present", "Research project with Francisco Ferreira Ruiz (Royal Holloway, University of London).", oneline: true)
 
     #item( "Research stay: Kent University", "Sept 2022", "Research collaboration with Stefan Marr (Kent University).", oneline: true)
 
 ])
+]
+#international
 
+#let honors = [
 
-#v(1.5em)
-#line(length: 100%, stroke: 0.3pt)
+#dividor
 
 #grid(columns: columns, [
     === Honors
 ], [
-    #item( "ISSTA'23 Research competition: 3rd place", "2023", "International ACM Research competition at ECOOP/ISSTA 2023 3rd place medal.", oneline: true)
+    #item( "ISSTA'23 Research competition: 3rd place", "2023", "International ACM Research competition at ECOOP/ISSTA 2023 3rd place medal.", oneline: true, url: "https://2023.issta.org/track/ecoop-issta-2023-student-research-competition")
 ])
+]
+
+#let services = [
+#dividor
+#grid(columns: columns, [
+    === Department services
+], [
+    #item( "Member of the OCI and CKO delegate", "2022 - present", "Delegated member to the CKO since sept 2024, and part of the focus group for the computer science bachelor and master reform.", oneline: true)
+
+    #item( "Science communication.", "2021 - present", "Assisting with the SID-in, Alumniday, Unimath, and Computer Science Olympiad.", oneline: true)
+
+    #item( "Admin informatica.ugent.be", "2021 - present", "", oneline: true, url: "https://informatica.ugent.be")
+])
+]
+#services
+
+// Appendix
+
+    #heading(level: 2, grid(columns: 4, column-gutter: 3pt, align: alignment.horizon, "Scientific publications", smaller(orcid("0-000-000-000-000")), smaller(researchgate("Tom-Lauwaerts")), smaller(googlescholar("https://scholar.google.com/citations?user=uHdt08sAAAAJ&hl=en&oi=ao"))))
 
 
-
-#pagebreak()
-#set page(fill: none)
-
-    == Research activities #orcid("0-000-000-000-000") #researchgate("Tom-Lauwaerts") #googlescholar("https://scholar.google.com/citations?user=uHdt08sAAAAJ&hl=en&oi=ao") // TODO
-
-// todo full list: conference talks + colaborations + summer school
+// todo full list: conference talks + collaborations + summer school
 
     //#item("OPLSS Summer school", "July 2021", "", oneline: true)
 //
-    === Peer-reviewed work
+    #item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], doi: "https://doi.org/10.1016/j.scico.2024.103157", artifact: "https://github.com/TOPLLab/latch")
 
+    #item("Concolic Multiverse Debugging", "2024-09-13 | Demo paper (DEBT'24)", [])
 
-    #item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], url: "doi.org")
+    #item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [], doi: "https://doi.org/10.1016/j.cola.2024.101268", artifact: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
+    
+    #item("Out-of-Place Debugging on Constraint Devices with the EDWARD Debugger (Demo)", "2023-07-17 | Demo paper (DEBT'23)", [], doi: "https://doi.org/10.1145/3605155.3605862")
 
-    #item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [])
+    #item("Demo: Debugging Constraint Devices with EDWARD", "2023-06-18 | Demo paper (MobiSys'23)", [], doi: "https://doi.org/10.1145/3581791.3597293")
 
-    #item("Event-Based Out-of-Place Debugging", "2022-09-14 | Conference paper (MPLR)", [])
+    #item("Event-Based Out-of-Place Debugging", "2022-09-14 | Conference paper (MPLR'22)", [], doi: "https://doi.org/10.1145/3546918.3546920", docs: "https://topllab.github.io/WARDuino/reference/edward/", slide: "https://tolauwae.github.io/mplr22/")
 
-    === Active research
+    //#v(1em)
+    ////#heading(level: 2, grid(columns: 4, column-gutter: 3pt, align: alignment.horizon, "Artifacts", link("https://github.com/TOPLLab", image("icons/git.svg", height: 1em))))
+    //== Other research activities
 
-    === Presentations and short papers
-
-    #item("Concolic Multiverse Debugging", "2024-09 | Demo paper (DEBT'24)", [])
-
-    #item("Out-of-Place Multiverse Debugging", "2023-07 | Demo paper (DEBT'23)", []) // todo check dates
-
-    === Bredere onderzoeksactiviteiten
-
-    - Co-organizer of the DEBT'25 workshop
-
-    - Member of the Artifact Evaluation Committee for the Programming Journal Volume 10
-
-    - Member of the Artifact Evaluation Committee for the Programming Journal Volume 9
-
-    - Research communication at UGent Alumnidag 2023
 
