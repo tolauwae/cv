@@ -6,7 +6,7 @@
 #let smaller(it) = text(size: 7pt, it)
 
 #let dividor = [
-    #v(1.5em)
+    #v(1.2em)
     #line(length: 100%, stroke: 0.3pt)
 ]
 
@@ -90,15 +90,17 @@
             #emphasize(url: url, head)
             #text(fill: subdued, style: "italic", quiet)
         ]
-        #v(0.1em)
-        #description
-    ]
 
-    #if url != none [
-        #link(url, content)
-    ] else [
-        #content
+        #if description != "" [
+            #v(0.1em)
+            #description
+        ]
     ]
+        #if url != none [
+            #link(url, content)
+        ] else [
+            #content
+        ]
 ]
 
 #let experience(employer, role, start, end, description, oneline: false) = [
@@ -129,10 +131,11 @@
 #let title = [
     #show heading: set block(below: 0.4em)
     #show heading: set text(font: "Lusitana", weight: 700, size: 1.9em, spacing: 0.2em)
-    #set align(center)
+    #set par(leading: 0.3em)
+    //#set align(center)
 
     //= #upper(text(font: ("Cambo"))[T o m #h(1em) L a u w a e r t s])
-    = Tom Lauwaerts
+    #heading[Tom\ #h(3.5pt)Lauwaerts]
     //#upper(text(fill: subdued, weight: 400, size: 0.8em, "Researcher specializing in Programming Languages"))
 ]
 
@@ -144,28 +147,33 @@
 
 #set page(margin: (left: sidemargin, right: sidemargin, top: 4em, bottom: 4em), paper: "a4")
 
-#title
-
-#v(1.5em)
-#line(length: 100%, stroke: 0.3pt)
+#let contact = [
+    #v(0.3em)
+    #upper(text(size: 7pt)[
+        #set text(fill: subdued)
+        #grid(columns: 5, gutter: 5pt, align: alignment.horizon,
+            link("mailto:tom.lauwaerts@gmail.com", "tom.lauwaerts@gmail.com"),
+            sym.dot.op,
+            "(+32) 468 20 27 42",
+            sym.dot.op,
+        [
+            #set text(size: 9pt)
+            #grid(columns: 4, column-gutter: 3pt, align: alignment.horizon,
+                linkedin("tolauwae"),
+                homepage("https://tolauwae.github.io/"),
+                github("tolauwae"))
+        ]
+        )
+    ])
+]
 
 #grid(columns: columns, [
-    === Contact
+    #title
 
-    #[
-        #set text(fill: subdued)
-        #grid(columns: 1, gutter: 5pt,
-        link("mailto:tom.lauwaerts@gmail.com", "tom.lauwaerts@gmail.com"),
-        "(+32) 468 20 27 42",
-        grid(columns: 4, gutter: 1pt, align: alignment.horizon,
-        linkedin("tolauwae"),
-        homepage("https://tolauwae.github.io/"),
-        github("tolauwae")
-        ))
-    ]
 ], [
-    Computer science researcher with nearly 4 years experience in programming language research focussed on debugging and testing of embedded applications, and a strong interest in software development and best practices.
+    I am a PhD researcher with nearly 4 years experience in formal programming language research focussed on debugging and testing of embedded applications, and a strong interest in software development and best practices. I will defend my PhD thesis by the end of June 2025. I have also been heavily involved in teaching during my PhD, and have become passionate about one-on-one tutoring, especially of master thesis and junior PhD students.
 
+    #contact
 ])
 
 #v(1.5em)
@@ -179,7 +187,7 @@
 
     #experience("Ghent University",  "Teaching Assistant", 2021, "present",
         [
-        Assisting the lecturer, supervising the tutorials, and responsible for the projects, for the courses: #text(style: "italic", "Fundamenten van programmeertalen"), and #text(style:"italic", "Logisch programmeren").
+        Supervising the tutorials and projects, and assisting oral exams for the courses: #text(style: "italic", "Fundamenten van programmeertalen"), and #text(style:"italic", "Logisch programmeren"). Counseling master students, and jury member for master dissertations.
     ])
 
     //#experience("Creative Therapy (startup)", "Embedded Software Developer (Internship)", "July", "August 2020", "Researching WebUSB technology and developing a USB gadget driver in Linux for WebUSB communication between the online platform and the hardware.")
@@ -198,7 +206,7 @@
 ], [
         #item("PhD. Computer Science (candidate)", "2021 - 2025", [Ghent University, TOPL lab], oneline: true)
 
-    #item("OPLSS 2022 Summer school", "June - July 2022", "Attended the Oregon Programming Languages Summer School.", oneline: true, url: "https://www.cs.uoregon.edu/research/summerschool/summer22/")
+    //#item("OPLSS 2022 Summer school", "June - July 2022", "Attended the Oregon Programming Languages Summer School.", oneline: true, url: "https://www.cs.uoregon.edu/research/summerschool/summer22/")
 
     #item("BSc. and MSc. Computer Science", "2016 - 2021", [Ghent University, faculty of Sciences], oneline: true)
 ])
@@ -228,7 +236,7 @@
 #grid(columns: columns, [
     === Highlighted research output
     
-    #smaller(grid(columns: 3, orcid("0000-0003-1262-8893"), researchgate("Tom-Lauwaerts"), googlescholar("https://scholar.google.com/citations?user=uHdt08sAAAAJ&hl=en&oi=ao")))
+    #smaller(grid(columns: 3, column-gutter: 3pt, orcid("0000-0003-1262-8893"), researchgate("Tom-Lauwaerts"), googlescholar("https://scholar.google.com/citations?user=uHdt08sAAAAJ&hl=en&oi=ao")))
 
 ], [
     #item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], doi: "https://doi.org/10.1016/j.scico.2024.103157", artifact: "https://github.com/TOPLLab/latch")
@@ -275,7 +283,7 @@
 #grid(columns: columns, [
     === Department services
 ], [
-    #item( "Member of the OCI and CKO delegate", "2022 - present", "Delegated member to the CKO since sept 2024, and part of the focus group for the computer science bachelor and master reform.", oneline: true)
+    #item( "Member of the OCI and delegate to the CKO", "2022 - present", "Delegated member to the CKO since sept 2024, and currently part of the focus group for the computer science bachelor and master reform.", oneline: true)
 
     #item( "Science communication.", "2021 - present", "Assisting with the SID-in, Alumniday, Unimath, and Computer Science Olympiad.", oneline: true)
 
@@ -283,6 +291,8 @@
 ])
 ]
 #services
+
+#honors
 
 // Appendix
 
@@ -299,7 +309,7 @@
 
     #item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [], doi: "https://doi.org/10.1016/j.cola.2024.101268", artifact: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
     
-    #item("Out-of-Place Debugging on Constraint Devices with the EDWARD Debugger (Demo)", "2023-07-17 | Demo paper (DEBT'23)", [], doi: "https://doi.org/10.1145/3605155.3605862")
+    #item("Out-of-Place Debugging on Constraint Devices with the EDWARD Debugger (Demo)", "2023-07-17 | Demo paper (DEBT'23)", [], doi: "https://doi.org/10.1145/3605155.3605862", slide: "https://tolauwae.github.io/debt.demo/")
 
     #item("Demo: Debugging Constraint Devices with EDWARD", "2023-06-18 | Demo paper (MobiSys'23)", [], doi: "https://doi.org/10.1145/3581791.3597293")
 
