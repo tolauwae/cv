@@ -1,6 +1,6 @@
 // Colour scheme
 
-#let highlight = rgb(32, 159, 181)
+#let highlight = rgb(0, 88, 66) // (77, 91, 75)
 #let subdued = rgb(92, 95, 119)
 
 #let smaller(it) = text(size: 8pt, it)
@@ -10,11 +10,18 @@
     #line(length: 100%, stroke: 0.3pt)
 ]
 
+// Styling
+
+//#show link: set text(fill: subdued, style: "italic");
+
 // Socials
 
 #let social(url, icon, body) = [
     #show link: set text(weight: 500)
-    #link(url, grid(columns: 2, align: alignment.horizon, column-gutter: 3pt, image(icon, width: 1em, height: 1em), body))
+    #link(url, grid(columns: 2, align: alignment.horizon, column-gutter: 3pt, [
+    #set text(fill: highlight)
+    #image(icon, width: 1em, height: 1em)
+  ], body))
 ]
 
 #let linkedin(id, color: rgb(0,0,0)) = { 
@@ -49,9 +56,14 @@
     social("https://orcid.org/" + id, "icons/orcid.svg", [#if full [#id] else []])
 }
 
+#let opensource(project, url) = {
+  let content = (github(url), project)
+  link(url, grid(columns: 4, align: alignment.horizon, column-gutter: 1pt, ..content))
+}
+
 // Building blocks
 
-#let item(head, quiet, description, oneline: false, url: none, doi: none, artifact: none, docs: none, slide: none) = [
+#let item(head, quiet, description, oneline: false, url: none, doi: none, repo: none, artifact: none, docs: none, slide: none) = [
     #let emphasize(addendum: [], url: none, body) = [
         #block(above: 1.2em, below: 0.7em)[
             #let content = ()
@@ -67,8 +79,11 @@
             content.push([
                 #link(doi, image("icons/pdf.svg", height: 1em))
             ])}
+            #if repo != none {content.push([
+                #link(repo, image("icons/git.svg", height: 1em))
+            ])}
             #if artifact != none {content.push([
-                #link(artifact, image("icons/git.svg", height: 1em))
+                #link(artifact, image("icons/artifact.svg", height: 0.9em))
             ])}
             #if slide != none {content.push([
                 #link(slide, image("icons/slideshow.svg", height: 1em))
@@ -205,7 +220,7 @@
 #grid(columns: columns, [
     === Education // Opleiding
 ], [
-        #item("PhD. Computer Science", "2021 - 2025", [Ghent University, TOPL lab], oneline: true)
+        #item("PhD. in Computer Science", "2021 - 2025", [Ghent University, TOPL lab], oneline: true)
 
     #item("BSc. and MSc. in Computer Science", "2016 - 2021", [Ghent University, faculty of Sciences], oneline: true)
 ])
@@ -239,9 +254,11 @@
 #grid(columns: columns, [
     === Volunteer work
 ], [
-    #item( "Member of the OCI and delegate to the CKO (UGent)", "2022 - 2025", "Delegated member to the CKO since sept 2024, and currently part of the focus group for the computer science bachelor and master program reforms.", oneline: true)
+    // #item( "Member of the OCI and delegate to the CKO (UGent)", "2022 - 2025", "Delegated member to the CKO since sept 2024, and currently part of the focus group for the computer science bachelor and master program reforms.", oneline: true)
 
     #item( "Science communication and outreach", "2021 - present", "Assisting with SID-in, Alumniday UGent, Unimath, and Computer Science Olympiad.", oneline: true)
+
+    #item( "Open-source software contributor", "2021 - present", grid(columns: 3, column-gutter: 5pt, opensource("WARDuino", "TOPLLab/WARDuino"), sym.dot.op, opensource("latch", "TOPLLab/latch")), oneline: true)  // opensource("typst", "typst/typst")
 ])
 ]
 
@@ -255,11 +272,11 @@
     #smaller(grid(columns: 3, column-gutter: 3pt, orcid("0000-0003-1262-8893"), researchgate("Tom-Lauwaerts"), googlescholar("https://scholar.google.com/citations?user=uHdt08sAAAAJ&hl=en&oi=ao")))
 
 ], [
-    #item("Multiverse debugging on microcontrollers", [2025-10 | Conference paper (OOPSLA'25)], [], doi: "https://doi.org/10.1145/3763136", artifact: "https://github.com/TOPLLab/MIO")
+    #item("Multiverse debugging on microcontrollers", [2025-10 | Conference paper (OOPSLA'25)], [], doi: "https://doi.org/10.1145/3763136", repo: "https://github.com/TOPLLab/MIO", artifact: "https://doi.org/10.5281/zenodo.15838624")
 
-    //#item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], doi: "https://doi.org/10.1016/j.scico.2024.103157", artifact: "https://github.com/TOPLLab/latch")
+    //#item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], doi: "https://doi.org/10.1016/j.scico.2024.103157", repo: "https://github.com/TOPLLab/latch")
 
-    //#item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [], doi: "https://doi.org/10.1016/j.cola.2024.101268", artifact: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
+    //#item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [], doi: "https://doi.org/10.1016/j.cola.2024.101268", repo: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
 
     #item("Event-Based Out-of-Place Debugging", "2022-09-14 | Conference paper (MPLR'22)", [], doi: "https://doi.org/10.1145/3546918.3546920", docs: "https://topllab.github.io/WARDuino/reference/edward/", slide: "https://tolauwae.github.io/mplr22/")
 ])
@@ -270,9 +287,9 @@
 #grid(columns: columns, [
     === Conference talks & \ demonstrations
 ], [
-    #item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], doi: "https://doi.org/10.1016/j.scico.2024.103157", artifact: "https://github.com/TOPLLab/latch")
+    #item("Latch: Enabling large-scale automated testing on constrained systems", "2024-12 | Science of Computer Programming Journal", [], doi: "https://doi.org/10.1016/j.scico.2024.103157", repo: "https://github.com/TOPLLab/latch")
 
-    #item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [], doi: "https://doi.org/10.1016/j.cola.2024.101268", artifact: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
+    #item("WARDuino: An embedded WebAssembly virtual machine", "2024-06 | Journal of Computer Languages", [], doi: "https://doi.org/10.1016/j.cola.2024.101268", repo: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
 
     #item("Event-Based Out-of-Place Debugging", "MPLR'22", [], doi: "https://doi.org/10.1145/3546918.3546920", slide: "https://tolauwae.github.io/mplr22/")
 
@@ -327,20 +344,22 @@
 // todo add full list of authors, and put own name in bold
 // todo add links for concolic multiverse debugging
 
-
 // todo full list: conference talks + collaborations + summer school
 
     //#item("OPLSS Summer school", "July 2021", "", oneline: true)
-    #item("Multiverse debugging on microcontrollers", [2025-10 | *Tom Lauwaerts*, Maarten Steevens, Christophe Scholliers | Proceedings of the ACM on Programming Languages (PACMPL)], [I will present this work at the main track of OOPSLA 2025 conference.], doi: "https://doi.org/10.1145/3763136", artifact: "https://github.com/TOPLLab/MIO")
+    #item("MIO: Multiverse Debugging in the Face of Input/Output", [2025-10 | *Tom Lauwaerts*, Maarten Steevens, Christophe Scholliers | Proceedings of the ACM on Programming Languages (PACMPL)], [I will present this work at the main track of OOPSLA 2025 conference.], doi: "https://doi.org/10.1145/3763136", repo: "https://github.com/TOPLLab/MIO", artifact: "https://doi.org/10.5281/zenodo.15838624")
     #v(1em)
 
-    #item("Latch: Enabling large-scale automated testing on constrained systems", [2024-12 | *Tom Lauwaerts*, Stefan Marr, Christophe Scholliers | Science of Computer Programming Journal], [I presented this work during a poster session at the ISSTA'23 conference.], doi: "https://doi.org/10.1016/j.scico.2024.103157", artifact: "https://github.com/TOPLLab/latch")
+    #item("Foundations for Constrained Debugging Techniques", [2025-08 | *Tom Lauwaerts* | PhD dissertation (Universiteit Gent)], [], doi: "https://doi.org/10.1145/3763136", repo: "https://github.com/tolauwae/phd-thesis")
+    #v(1em)
+
+    #item("Latch: Enabling large-scale automated testing on constrained systems", [2024-12 | *Tom Lauwaerts*, Stefan Marr, Christophe Scholliers | Science of Computer Programming Journal], [I presented this work during a poster session at the ISSTA'23 conference.], doi: "https://doi.org/10.1016/j.scico.2024.103157", repo: "https://github.com/TOPLLab/latch")
     #v(1em)
 
     #item("Concolic Multiverse Debugging", [2024-09-13 | Maarten Steevens, *Tom Lauwaerts*, Christophe Scholliers | Short paper (DEBT'24)], [An early version of this work was presented by myself at the final of the ISSTA'23 Research competition.], doi: "https://doi.org/10.1145/3678720.3685318")
     #v(1em)
 
-    #item("WARDuino: An embedded WebAssembly virtual machine", [2024-06 | *Tom Lauwaerts*, Robbert Gurdeep Singh, Christophe Scholliers | Journal of Computer Languages], [Presented at the International Conference on the Art, Science, and Engineering of Programming 2022, during a poster session and a dedicated demonstration.], doi: "https://doi.org/10.1016/j.cola.2024.101268", artifact: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
+    #item("WARDuino: An embedded WebAssembly virtual machine", [2024-06 | *Tom Lauwaerts*, Robbert Gurdeep Singh, Christophe Scholliers | Journal of Computer Languages], [Presented at the International Conference on the Art, Science, and Engineering of Programming 2022, during a poster session and a dedicated demonstration.], doi: "https://doi.org/10.1016/j.cola.2024.101268", repo: "https://github.com/TOPLLab/WARDuino/", docs: "https://topllab.github.io/WARDuino/")
     #v(1em)
     
     #item("Out-of-Place Debugging on Constraint Devices with the EDWARD Debugger (Demo)", [2023-07-17 | *Tom Lauwaerts*, Carlos Rojas Castillo, Elisa Gonzalez Boix, Christophe Scholliers | Short paper (DEBT'23)], [Demo presentation at the first Workshop on Future Debugging Techniques (DEBT'23).], doi: "https://doi.org/10.1145/3605155.3605862", slide: "https://tolauwae.github.io/debt.demo/")
