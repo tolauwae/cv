@@ -1,6 +1,16 @@
 // Colour scheme
 
 #let highlight = rgb(0, 88, 66) // (77, 91, 75)
+
+// #2A2D31 Jet
+// #6F5392 Royal Purple
+// #2C446F Dark Cornflower Blue
+// #6C7F93 Slate Gray
+// #799ACC Blue Gray
+// #468F92 Viridian Green
+// #B2D1C9 Opal
+// #005842 Castleton Green
+
 #let subdued = rgb(92, 95, 119)
 
 #let smaller(it) = text(size: 8pt, it)
@@ -12,7 +22,13 @@
 
 // Styling
 
+#set line(stroke: highlight)
+
 //#show link: set text(fill: subdued, style: "italic");
+
+#show heading.where(level: 1): set text(fill: highlight)
+#show heading.where(level: 2): set text(fill: highlight)
+#show heading.where(level: 3): set text(fill: highlight)
 
 // Socials
 
@@ -58,6 +74,7 @@
 
 #let opensource(project, url) = {
   let content = (github(url), project)
+  set text(fill: highlight, weight: "bold", size: 8pt)
   link(url, grid(columns: 4, align: alignment.horizon, column-gutter: 1pt, ..content))
 }
 
