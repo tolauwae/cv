@@ -17,7 +17,7 @@
 
 #let dividor = [
     #v(1.0em)
-    #line(length: 100%, stroke: 0.3pt)
+    #line(length: 100%, stroke: 0.5pt)
 ]
 
 // Styling
@@ -154,7 +154,7 @@
 #show heading.where(level: 2): it => {
     set block(below: 0.5em, above: 1.0em)
     it
-    line(length: 100%, stroke: 0.3pt)
+    line(length: 100%, stroke: 0.5pt)
     v(0.5em)
 }
 
@@ -168,7 +168,7 @@
 
     //= #upper(text(font: ("Cambo"))[T o m #h(1em) L a u w a e r t s])
     //#heading[Tom\ #h(3.5pt)Lauwaerts]
-    #heading[#text(fill: subdued, size: 18pt, style: "italic")[dr.] Tom Lauwaerts]
+    #heading[#text(fill: black, size: 18pt, style: "italic")[dr.] Tom Lauwaerts]
     //#upper(text(fill: subdued, weight: 400, size: 0.8em, "Researcher specializing in Programming Languages"))
 ]
 
@@ -232,7 +232,7 @@
 
 #let education = [
 //#dividor
-#line(length: 100%, stroke: 0.3pt)
+#line(length: 100%, stroke: 0.5pt)
 
 #grid(columns: columns, [
     === Education // Opleiding
